@@ -7,4 +7,4 @@ Some examples:
 
 ![N|Solid](/reflections.png)
 
-![N|Solid](/refraction.png)
+![N|Solid](/refractions.png)
