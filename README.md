@@ -23,3 +23,6 @@ See [Examples.ipynb](Examples.ipynb) to see how to generate the following images
 ![N|Solid](/images/refractions.png)
 
 ![N|Solid](/images/prism.png)
+
+A basic version of this raytracer can be found here:
+https://github.com/jamesbowman/raytrace
