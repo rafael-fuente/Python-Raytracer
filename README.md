@@ -15,8 +15,8 @@ pip install pillow
 pip install numpy
 ```
 
+See [Examples.ipynb](Examples.ipynb) to see how to generate the following images:
 
-Some examples:
 
 ![N|Solid](/images/reflections.png)
 
