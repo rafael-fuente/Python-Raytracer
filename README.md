@@ -18,8 +18,8 @@ pip install numpy
 
 Some examples:
 
-![N|Solid](/example_images/reflections.png)
+![N|Solid](/images/reflections.png)
 
-![N|Solid](/example_images/refractions.png)
+![N|Solid](/images/refractions.png)
 
-![N|Solid](/example_images/prism.png)
+![N|Solid](/images/prism.png)
