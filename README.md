@@ -8,3 +8,5 @@ Some examples:
 ![N|Solid](/reflections.png)
 
 ![N|Solid](/refractions.png)
+
+![N|Solid](/prism.png)
