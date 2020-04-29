@@ -1,2 +1,0 @@
-pillow==0.0
-numpy==0.0
