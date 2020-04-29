@@ -1,5 +1,7 @@
 # Python-Fast-Raytracer
 
+[![Run on Repl.it](https://repl.it/badge/github/rafael-fuente/Python-Fast-Raytracer)](https://repl.it/github/rafael-fuente/Python-Fast-Raytracer)
+
 A basic raytracer that exploits numpy arrays and functions to work fast.
 The code is written keeping as much readability as possible. 
 
