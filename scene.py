@@ -95,5 +95,4 @@ class Scene():
         print ("Took", time.time() - t0)
 
         img_RGB = [Image.fromarray((255 * np.clip(c, 0, 1).reshape((self.camera.screen_height, self.camera.screen_width))).astype(np.uint8), "L") for c in color]
-        #Image.merge("RGB", XYZ_color).save("fig.png")
         return Image.merge("RGB", img_RGB)
