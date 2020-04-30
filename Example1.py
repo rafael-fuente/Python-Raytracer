@@ -51,5 +51,7 @@ Sc.add_SkyBox(stormydays)
 
 # Render 
 img = Sc.render()
-img.show()
+
 img.save("EXAMPLE1.png")
+
+img.show()
