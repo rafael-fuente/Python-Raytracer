@@ -1,0 +1,5 @@
+UPWARDS = 1
+UPDOWN = -1         
+FARAWAY = 1.0e39  
+SKYBOX_DISTANCE = 1.0e6   
+

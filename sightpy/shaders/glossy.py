@@ -1,0 +1,86 @@
+from ..utils.constants import *
+from ..utils.vector3 import vec3, rgb, extract
+from functools import reduce as reduce 
+from ..ray import Ray, raytrace
+from .. import lights
+import numpy as np
+from . import Shader
+
+class Glossy(Shader):
+    def __init__(self, diff_color, roughness, spec_c, diff_c, n, max_ray_depth):
+        self.diff_color = diff_color
+        self.roughness = roughness
+        self.diff_c = diff_c
+        self.spec_c = spec_c
+        self.n = n # index of refraction
+        self.max_ray_depth = max_ray_depth
+
+
+    def get_color(self, scene, ray, hit):
+
+        hit.point = (ray.origin + ray.dir * hit.distance) # intersection point
+        N = hit.material.get_Normal(hit)     # normal 
+
+        if hit.material.texture is not None:  #check if material has texture
+            diff_color = hit.material.get_texture_color(hit)* self.diff_color* self.diff_c
+        else:
+            diff_color = self.diff_color* self.diff_c
+
+        # Ambient
+        color = scene.ambient_color * diff_color
+
+        for light in scene.Light_list:
+
+            L = light.get_L()                                         # direction to light
+            dist_light = light.get_distance(hit.point)                # distance to light
+            NdotL = np.maximum(N.dot(L), 0.)    
+            lv = light.get_irradiance(dist_light, NdotL)              # amount of intensity that falls on the surface
+            
+
+            V = ray.dir*-1.                           # direction to ray origin
+            nudged = hit.point + N * .000001                  # M nudged to avoid itself
+            H = (L + V).normalize()                   # Half-way vector
+
+
+            
+            
+            # Shadow: find if the point is shadowed or not.
+            # This amounts to finding out if M can see the light
+            # Shoot a ray from M to L and check what object is the nearest  
+            if not scene.shadowed_collider_list == []:
+                inters = [s.intersect(nudged, L) for s in scene.shadowed_collider_list]
+                light_distances, light_hit_orientation = zip(*inters)
+                light_nearest = reduce(np.minimum, light_distances)
+                seelight = (light_nearest >= dist_light)
+            else:
+                seelight = 1.
+
+            # Lambert shading (diffuse)
+            color +=  diff_color * lv * seelight 
+            
+            if self.roughness != 0.0:                
+                #Fresnel Factor for specular highlight  (Schlick’s approximation)
+                F0 = np.abs((ray.n - self.n)/(ray.n  + self.n))**2
+                cosθ = np.clip(V.dot(H), 0.0, 1.)
+                F = F0 + (1. - F0)*(1.- cosθ)**5
+
+   
+                # Phong shading (specular highlight)
+                a = 2./(self.roughness**2.) - 2.
+                Dphong =  np.power(np.clip(N.dot(H), 0., 1.), a) * (a + 2.)/(2.*np.pi)
+                
+                # Cook-Torrance model
+                color +=  F  * Dphong  /(4. * np.clip(N.dot(V) * NdotL, 0.001, 1.) ) * seelight * lv * self.spec_c
+
+        # Reflection
+        if ray.depth < self.max_ray_depth:
+
+            # Fresnel Factor for reflections  (Schlick’s approximation)
+
+            F0 = np.abs((scene.n - self.n)/(scene.n  + self.n))**2
+            cosθ = np.clip(V.dot(N),0.0,1.)
+            F = F0 + (1. - F0)*(1.- cosθ)**5
+            reflected_ray_dir = (ray.dir - N * 2. * ray.dir.dot(N)).normalize()
+            color += (raytrace(Ray(nudged, reflected_ray_dir, ray.depth + 1, ray.n, ray.reflections + 1, ray.transmissions), scene))*F
+
+        return color
