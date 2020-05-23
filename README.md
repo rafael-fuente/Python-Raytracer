@@ -17,14 +17,13 @@ pip install pillow
 pip install numpy
 ```
 
-See [Examples.ipynb](Examples.ipynb) to see how to render the following images:
-Or alternatively run:
+See the examples to see how to render the following images:
 
 ```
 python Example1.py
 ```
 
-![N|Solid](/images/reflections.png)
+![N|Solid](/images/EXAMPLE1.png)
 
 ```
 python Example2.py
