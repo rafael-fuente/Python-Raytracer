@@ -20,22 +20,26 @@ pip install numpy
 See the examples to see how to render the following images:
 
 ```
-python Example1.py
+python example1.py
 ```
 
 ![N|Solid](/images/EXAMPLE1.png)
 
 ```
-python Example2.py
+python example2.py
 ```
 
-![N|Solid](/images/refractions.png)
+![N|Solid](/images/EXAMPLE2.png)
 
 ```
-python Example3.py
+python example3.py
 ```
 
-![N|Solid](/images/prism.png)
+![N|Solid](/images/EXAMPLE3.png)
+```
+python example4.py
+```
 
+![N|Solid](/images/EXAMPLE4.png)
 A basic version of this raytracer can be found here:
 https://github.com/jamesbowman/raytrace
