@@ -41,5 +41,6 @@ python example4.py
 ```
 
 ![N|Solid](/images/EXAMPLE4.png)
+
 A basic version of this raytracer can be found here:
 https://github.com/jamesbowman/raytrace
