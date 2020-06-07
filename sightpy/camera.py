@@ -10,6 +10,7 @@ class Camera():
         self.camera_screen_scale = float(screen_width) / screen_height
 
         self.look_from = look_from
+        self.look_at = look_at
         self.camera_width = camera_width
         self.camera_height = camera_width/self.camera_screen_scale
 
@@ -45,7 +46,7 @@ class Camera():
 
         # set ray direction in world space:
         rx, ry = random_in_unit_disk(x.shape[0])
-        ray_origin = self.look_from  +  self.lens_radius * vec3(rx,ry, 0.)
+        ray_origin = self.look_from  +   self.cameraRight *rx* self.lens_radius   +   self.cameraUp *ry* self.lens_radius
         ray_dir = (self.look_from  +   self.cameraUp*y*self.focal_distance  +  self.cameraRight*x*self.focal_distance  + self.cameraFwd*self.focal_distance  - ray_origin  ).normalize()
         return Ray(origin=ray_origin, dir=ray_dir, depth=0,  n=n, reflections = 0, transmissions = 0)
 
