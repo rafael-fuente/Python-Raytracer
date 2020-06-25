@@ -3,6 +3,8 @@
 A basic raytracer that exploits numpy arrays and functions to work fast.
 The code is written keeping as much readability as possible. 
 
+![animation](/images/animation.gif)
+
 - [x] Refraction
 - [x] Thin film interference
 - [x] Textures
