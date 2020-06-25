@@ -3,6 +3,12 @@
 A basic raytracer that exploits numpy arrays and functions to work fast.
 The code is written keeping as much readability as possible. 
 
+- [x] Refraction
+- [x] Thin film interference
+- [x] Textures
+- [x] Monte Carlo Ray Tracing with importance sampling
+- [ ] Relativistic optical effects
+
 ## Installation
 
 Just clone or download this repo. You'll need to install two packages.
