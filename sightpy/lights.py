@@ -2,6 +2,8 @@ from .utils.constants import SKYBOX_DISTANCE
 import numpy as np
 from abc import abstractmethod 
 
+
+# lights only have effect on Glossy materials
 class Light:
     def __init__(self, pos, color):
         self.pos = pos

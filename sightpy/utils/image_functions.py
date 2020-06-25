@@ -17,10 +17,6 @@ def load_image_with_blur(path, blur = 0.):
 
 
 
-def load_image_as_greymap(path):
-    img = Image.open(Path(path))
-    return np.asarray(img)/256.
-
 
 def load_image_as_linear_sRGB(path, blur = 0.0):
 

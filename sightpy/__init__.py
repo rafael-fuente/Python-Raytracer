@@ -8,7 +8,8 @@ from .scene import *
 from .geometry import *
 from .lights import *
 from .materials import *
-from .shaders import *
+from .textures.texture import *
+from .animation import *
 
 
 

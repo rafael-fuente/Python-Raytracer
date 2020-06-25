@@ -1,18 +1,17 @@
-from ..geometry import Cuboid_Collider, Surface
+from ..geometry import Cuboid_Collider, Primitive
 from ..materials import Material
-from ..shaders.shader import Shader
 from ..utils.vector3 import vec3
 from ..utils.constants import SKYBOX_DISTANCE
 from ..utils.image_functions import load_image, load_image_as_linear_sRGB
 from .util.blur_background import blur_skybox
 
-class SkyBox(Surface):
+class SkyBox(Primitive):
     def __init__(self, cubemap, center = vec3(0.,0.,0.), light_intensity = 0.0, blur = 0.0):
         super().__init__(center,  SkyBox_Material(cubemap, light_intensity, blur), shadow = False)
         l = SKYBOX_DISTANCE
         self.light_intensity = light_intensity
                                                                                                                               #BOTTOM
-        self.collider_list += [Cuboid_Collider(assigned_surface = self, center = center, width = 2*l, height =2*l ,length =2*l )]
+        self.collider_list += [Cuboid_Collider(assigned_primitive = self, center = center, width = 2*l, height =2*l ,length =2*l )]
         
     
     def get_uv(self, hit):
@@ -34,7 +33,6 @@ class SkyBox_Material(Material):
         self.blur = blur
         self.light_intensity = light_intensity
         self.repeat = 1.0
-        self.shader = SkyBox_Shader()
 
     def get_texture_color(self, hit, ray):
         u,v = hit.get_uv()
@@ -53,7 +51,7 @@ class SkyBox_Material(Material):
         return color
 
 
-class SkyBox_Shader(Shader):
     def get_color(self, scene, ray, hit):
         hit.point = (ray.origin + ray.dir * hit.distance)
         return hit.material.get_texture_color(hit,ray)
+
