@@ -1,6 +1,7 @@
 from .material import Material
 
-from .metals import *
-from .floor import *
-from .glasses import *
-from .soap_bubble import *
+from .glossy import Glossy
+from .refractive import Refractive
+from .thin_film_interference import ThinFilmInterference
+from .diffuse import Diffuse
+from .emissive import Emissive
