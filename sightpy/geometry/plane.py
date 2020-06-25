@@ -1,33 +1,35 @@
 import numpy as np
 from ..utils.constants import *
 from ..utils.vector3 import vec3
-from ..geometry import Surface, Collider
+from ..geometry import Primitive, Collider
 
 
-class Plane(Surface): 
-    def __init__(self,center,  material, width,height, pu, pv, shadow = True):
-        super().__init__(center,  material, shadow = shadow)  
-        self.collider_list += [Plane_Collider(assigned_surface = self, center = center, pu = pu, pv = pv, w= width/2, h=height/2)]
+class Plane(Primitive): 
+    def __init__(self,center,  material, width,height, u_axis, v_axis, max_ray_depth = 5, shadow = True):
+        super().__init__(center,  material, max_ray_depth,shadow = shadow)  
+        self.collider_list += [Plane_Collider(assigned_primitive = self, center = center, u_axis = u_axis, v_axis = v_axis, w= width/2, h=height/2)]
         self.width = width   
         self.height = height
+        self.bounded_sphere_radius = np.sqrt((width/2)**2 + (height/2)**2)
+
     def get_uv(self, hit):
         return hit.collider.get_uv(hit)
 
 
 class Plane_Collider(Collider):
-    def __init__(self, pu, pv, w, h, uv_shift = (0.,0.),**kwargs):
+    def __init__(self, u_axis, v_axis, w, h, uv_shift = (0.,0.),**kwargs):
         super().__init__(**kwargs)
-        self.normal = pu.cross(pv).normalize()
+        self.normal = u_axis.cross(v_axis).normalize()
         
         
         self.w = w
         self.h = h
-        self.pu = pu
-        self.pv = pv
+        self.u_axis = u_axis
+        self.v_axis = v_axis
         self.uv_shift = uv_shift
-        self.inverse_basis_matrix =  np.array([[self.pu.x,       self.pv.x,         self.normal.x],
-                                               [self.pu.y,       self.pv.y,         self.normal.y],
-                                               [self.pu.z,       self.pv.z,         self.normal.z]])
+        self.inverse_basis_matrix =  np.array([[self.u_axis.x,       self.v_axis.x,         self.normal.x],
+                                               [self.u_axis.y,       self.v_axis.y,         self.normal.y],
+                                               [self.u_axis.z,       self.v_axis.z,         self.normal.z]])
         self.basis_matrix = self.inverse_basis_matrix.T
 
 
@@ -47,8 +49,8 @@ class Plane_Collider(Collider):
         M_C = M - self.center
         
         #plane basis coordinates
-        u = self.pu.dot(M_C)
-        v = self.pv.dot(M_C)
+        u = self.u_axis.dot(M_C)
+        v = self.v_axis.dot(M_C)
 
 
         hit_inside = (np.abs(u)  <= self.w) & (np.abs(v) <= self.h) & (NdotC_O * NdotD > 0) 
@@ -62,15 +64,15 @@ class Plane_Collider(Collider):
         return np.select([pred1,pred2,pred3] , [[dis, np.tile(UPWARDS, dis.shape) ], [dis,np.tile(UPDOWN, dis.shape)], FARAWAY])
     
     def rotate(self,M, center):
-        self.pu = self.pu.matmul(M)
-        self.pv = self.pv.matmul(M)
+        self.u_axis = self.u_axis.matmul(M)
+        self.v_axis = self.v_axis.matmul(M)
         self.normal = self.normal.matmul(M)
         self.center = center + (self.center-center).matmul(M)
         
     def get_uv(self, hit):
         M_C = hit.point - self.center
-        u = ((self.pu.dot(M_C)/self.w + 1 ) /2 + self.uv_shift[0])
-        v = ((self.pv.dot(M_C)/self.h + 1 ) /2  + self.uv_shift[1])
+        u = ((self.u_axis.dot(M_C)/self.w + 1 ) /2 + self.uv_shift[0])
+        v = ((self.v_axis.dot(M_C)/self.h + 1 ) /2  + self.uv_shift[1])
         return u,v
 
 

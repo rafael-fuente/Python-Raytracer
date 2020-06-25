@@ -1,14 +1,14 @@
 import numpy as np
 from ..utils.constants import *
 from ..utils.vector3 import vec3
-from ..geometry.surface import Surface
+from ..geometry.primitive import Primitive
 from ..geometry.collider import Collider
 
 
-class Triangle(Surface): 
-    def __init__(self,center,  material, p1 , p2, p3, shadow = True):
-        super().__init__(center,  material, shadow = shadow)  
-        self.collider_list += [Triangle_Collider(assigned_surface = self, p1 =p1, p2 = p2, p3 = p3)]
+class Triangle(Primitive): 
+    def __init__(self,center,  material, p1 , p2, p3, max_ray_depth,shadow = True):
+        super().__init__(center,  material, max_ray_depth, shadow = shadow)  
+        self.collider_list += [Triangle_Collider(assigned_primitive = self, p1 =p1, p2 = p2, p3 = p3)]
 
     def get_uv(self, M, collider):
         return collider.get_uv(M)
@@ -18,7 +18,7 @@ class Triangle_Collider(Collider):
     def __init__(self,assigned_surface, p1, p2, p3):
 
 
-        self.assigned_surface = assigned_surface
+        self.assigned_primitive = assigned_surface
         self.p1 = p1
         self.p2 = p2
         self.p3 = p3

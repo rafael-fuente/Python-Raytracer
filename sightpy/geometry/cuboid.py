@@ -1,16 +1,17 @@
 import numpy as np
 from ..utils.constants import *
 from ..utils.vector3 import vec3
-from ..geometry import Surface, Collider
+from ..geometry import Primitive, Collider
 
-class Cuboid(Surface): 
-    def __init__(self,center,  material, width,height, length, shadow = True):
-        super().__init__(center,  material, shadow = shadow)
+class Cuboid(Primitive): 
+    def __init__(self,center,  material, width,height, length,max_ray_depth = 5, shadow = True):
+        super().__init__(center,  material,  max_ray_depth, shadow = shadow)
         self.width = width
         self.height = height
         self.length = length
-        
-        self.collider_list += [Cuboid_Collider(assigned_surface = self, center = center, width = width, height =height ,length =length )]
+        self.bounded_sphere_radius = np.sqrt((self.width/2)**2 + (self.height/2)**2 + (self.length/2)**2)
+
+        self.collider_list += [Cuboid_Collider(assigned_primitive = self, center = center, width = width, height =height ,length =length )]
         
         
     def get_uv(self, hit):
@@ -20,21 +21,22 @@ class Cuboid(Surface):
     
     
 """        
+        This was the old approach, but remplaced by a Box collider that is more efficient
         #we model a cuboid as six planes
-        w,h,l  = width/2, height/2, length/2
+        
         
         #BOTTOM                                                                                                                                       #BOTTOM
-        self.collider_list += [Plane_Collider(assigned_surface = self, center = center + vec3(0.0,-h, 0.0), pu = vec3(1.0, 0.0, 0.0), pv = vec3(0.0, 0.0, 1.0), w = w, h = l, uv_shift = (1,0))]
+        self.collider_list += [Plane_Collider(assigned_primitive = self, center = center + vec3(0.0,-h, 0.0), u_axis = vec3(1.0, 0.0, 0.0), v_axis = vec3(0.0, 0.0, 1.0), w = w, h = l, uv_shift = (1,0))]
         #TOP                                                                                                                                       #TOP
-        self.collider_list += [Plane_Collider(assigned_surface = self, center = center + vec3(0.0,h, 0.0), pu = vec3(1.0, 0.0, 0.0), pv = vec3(0.0, 0.0, -1.0), w = w, h = l, uv_shift= (1,2))]
+        self.collider_list += [Plane_Collider(assigned_primitive = self, center = center + vec3(0.0,h, 0.0), u_axis = vec3(1.0, 0.0, 0.0), v_axis = vec3(0.0, 0.0, -1.0), w = w, h = l, uv_shift= (1,2))]
         #RIGHT                                                                                                                                       #RIGHT
-        self.collider_list += [Plane_Collider(assigned_surface = self, center = center + vec3(w,0.0, 0.0), pu = vec3(0.0, 0.0,  -1.0), pv = vec3(0.0, 1.0, 0.0), w = l, h = h, uv_shift= (2,1))]
+        self.collider_list += [Plane_Collider(assigned_primitive = self, center = center + vec3(w,0.0, 0.0), u_axis = vec3(0.0, 0.0,  -1.0), v_axis = vec3(0.0, 1.0, 0.0), w = l, h = h, uv_shift= (2,1))]
         #LEFT                                                                                                                                       #LEFT
-        self.collider_list += [Plane_Collider(assigned_surface = self, center = center + vec3(-w,0.0, 0.0), pu = vec3(0.0, 0.0,  1.0), pv = vec3(0.0, 1.0, 0.0), w = l, h = h, uv_shift= (0,1))]
+        self.collider_list += [Plane_Collider(assigned_primitive = self, center = center + vec3(-w,0.0, 0.0), u_axis = vec3(0.0, 0.0,  1.0), v_axis = vec3(0.0, 1.0, 0.0), w = l, h = h, uv_shift= (0,1))]
         #FRONT                                                                                                                                       #FRONT
-        self.collider_list += [Plane_Collider(assigned_surface = self, center = center + vec3(0,0, l), pu = vec3(1.0, 0.0, 0.0), pv = vec3(0.0, 1.0, 0.0), w = w, h = h, uv_shift= (1,1))]
+        self.collider_list += [Plane_Collider(assigned_primitive = self, center = center + vec3(0,0, l), u_axis = vec3(1.0, 0.0, 0.0), v_axis = vec3(0.0, 1.0, 0.0), w = w, h = h, uv_shift= (1,1))]
         #BACK                                                                                                                                       #BACK
-        self.collider_list += [Plane_Collider(assigned_surface = self, center = center + vec3(0,0, -l), pu = vec3(-1.0, 0.0, 0.0), pv = vec3(0.0, 1.0, 0.0), w = w, h = h, uv_shift= (3,1))]
+        self.collider_list += [Plane_Collider(assigned_primitive = self, center = center + vec3(0,0, -l), u_axis = vec3(-1.0, 0.0, 0.0), v_axis = vec3(0.0, 1.0, 0.0), w = w, h = h, uv_shift= (3,1))]
 """
 
 
@@ -107,7 +109,7 @@ class Cuboid_Collider(Collider):
         # if tmin < 0 then the ray origin is inside of the AABB and tmin is behind the start of the ray so tmax is the first intersection
         mask2 = tmin < 0
         return np.select([mask1,mask2,True] , [FARAWAY , [tmax,  np.tile(UPDOWN, tmin.shape)] ,  [tmin,  np.tile(UPWARDS, tmin.shape)]])
-        #return np.where(mask , FARAWAY,  [tmin,  np.tile(UPWARDS, tmin.shape)])
+        
 
     def get_Normal(self, hit):
 
@@ -137,20 +139,6 @@ class Cuboid_Collider(Collider):
         return u,v
 
 
-    """#if BOTTOM 
-        pu = self.ax_w; pv =  self.ax_l*-1; uv_shift = (1,0)
-        #if TOP                                                                                                                                           #TOP
-        pu = self.ax_w; pv =  self.ax_l;  uv_shift= (1,2)
-        #if RIGHT                                                                                                                                       #RIGHT
-        pu = self.ax_l; pv = self.ax_h;  uv_shift= (2,1)
-        #if LEFT                                                                                                                                       #LEFT
-        pu = self.ax_l*-1; pv = self.ax_h;  uv_shift= (0,1)
-        #if FRONT                                                                                                                                       #FRONT
-        pu = self.ax_w*-1; pv = self.ax_h;  uv_shift= (3,1)
-        #if BACK                                                                                                                                       #BACK
-        pu = self.ax_w; pv = self.ax_h;  uv_shift= (1,1)
-
-        BOTTOM = np.where(hit.N == vec"""
 
 
 

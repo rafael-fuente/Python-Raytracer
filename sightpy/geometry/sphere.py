@@ -1,12 +1,14 @@
 import numpy as np
 from ..utils.constants import *
 from ..utils.vector3 import vec3
-from ..geometry import Surface, Collider
+from ..geometry import Primitive, Collider
 
-class Sphere(Surface): 
-    def __init__(self,center,  material, radius, shadow = True):
-        super().__init__(center,  material, shadow = shadow)
-        self.collider_list += [Sphere_Collider(assigned_surface = self, center = center, radius = radius)]
+class Sphere(Primitive): 
+    def __init__(self,center,  material, radius, max_ray_depth = 5, shadow = True):
+        super().__init__(center,  material, max_ray_depth, shadow = shadow)
+        self.collider_list += [Sphere_Collider(assigned_primitive = self, center = center, radius = radius)]
+        self.bounded_sphere_radius = radius
+
     def get_uv(self, hit):
         return hit.collider.get_uv(hit)
 
@@ -42,7 +44,9 @@ class Sphere_Collider(Collider):
         return (hit.point - self.center) * (1. / self.radius) 
 
     def get_uv(self, hit):
-        M_C = hit.point - self.center
-        u = np.arctan2(M_C.z,M_C.x) - np.pi
-        v = np.arctan2(np.sqrt(M_C.x**2 + M_C.z**2) , M_C.y)
+        M_C = (hit.point - self.center) / self.radius
+        phi = np.arctan2(M_C.z, M_C.x)
+        theta = np.arcsin(M_C.y)
+        u = (phi + np.pi) / (2*np.pi)
+        v = (theta + np.pi/2) / np.pi
         return u,v
