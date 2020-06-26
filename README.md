@@ -56,6 +56,9 @@ python example_cornell_box.py
 
 ![N|Solid](/images/cornell_box.png)
 
+Some animations:
+https://www.youtube.com/watch?v=vt9vAcZQT4A
+
 A basic version of this raytracer can be found here:
 https://github.com/jamesbowman/raytrace
 
