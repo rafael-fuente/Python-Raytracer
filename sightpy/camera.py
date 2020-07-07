@@ -41,8 +41,8 @@ class Camera():
     def get_ray(self,n): # n = index of refraction of scene main medium (for air n = 1.)
 
         # in each pixel, take a random position to avoid aliasing.
-        x = self.x + (np.random.rand(len(self.x )) - 0.5)*self.camera_width/2.  /(self.screen_width)
-        y = self.y + (np.random.rand(len(self.y )) - 0.5)*self.camera_height/2. /(self.screen_height)
+        x = self.x + (np.random.rand(len(self.x )) - 0.5)*self.camera_width  /(self.screen_width)
+        y = self.y + (np.random.rand(len(self.y )) - 0.5)*self.camera_height /(self.screen_height)
 
         # set ray direction in world space:
         rx, ry = random_in_unit_disk(x.shape[0])
