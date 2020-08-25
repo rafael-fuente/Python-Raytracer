@@ -1,6 +1,6 @@
 # Python-Fast-Raytracer
 
-A basic raytracer that exploits numpy arrays and functions to work fast.
+A basic Ray Tracer that exploits numpy arrays and functions to work fast.
 The code is written keeping as much readability as possible. 
 
 ![animation](/images/animation.gif)
