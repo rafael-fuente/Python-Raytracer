@@ -25,6 +25,8 @@ pip install pillow
 pip install numpy
 ```
 
+## Examples
+
 See the examples to see how to render the following images:
 
 ```
