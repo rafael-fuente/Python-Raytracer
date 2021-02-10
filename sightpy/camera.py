@@ -22,7 +22,7 @@ class Camera():
 
 
         #if you use a lens_radius >= 0.0 make sure that samples_per_pixel is a large number. Otherwise you'll get a lot of noise
-        self.lens_radius =  aperture / 2;
+        self.lens_radius =  aperture / 2.
         self.focal_distance = focal_distance
 
 
