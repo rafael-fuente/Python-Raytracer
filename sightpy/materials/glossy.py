@@ -36,7 +36,7 @@ class Glossy(Material):
         
         for light in scene.Light_list:
 
-            L = light.get_L()                                         # direction to light
+            L = light.get_L(hit.point)                                         # direction to light
             dist_light = light.get_distance(hit.point)                # distance to light
             NdotL = np.maximum(N.dot(L), 0.)    
             lv = light.get_irradiance(dist_light, NdotL)              # amount of intensity that falls on the surface
