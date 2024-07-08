@@ -1,6 +1,6 @@
-# Python-Fast-Raytracer
+# Python-Raytracer
 
-A basic Ray Tracer that exploits numpy arrays and functions to work fast.
+A basic Ray Tracer that exploits numpy arrays and functions to work reasonably fast compared with a pure Python implementation.
 The code is written keeping as much readability as possible. 
 
 ![animation](/images/animation.gif)
@@ -9,7 +9,6 @@ The code is written keeping as much readability as possible.
 - [x] Thin film interference
 - [x] Textures
 - [x] Monte Carlo Ray Tracing with importance sampling
-- [ ] Relativistic optical effects
 
 ## Installation
 
@@ -61,6 +60,10 @@ python example_cornell_box.py
 Some animations:
 https://www.youtube.com/watch?v=vt9vAcZQT4A
 
+
 A basic version of this raytracer can be found here:
 https://github.com/jamesbowman/raytrace
 
+
+A C++ version of this raytracer can be found here:
+https://github.com/rafael-fuente/sightpy-weekend-raytracer
