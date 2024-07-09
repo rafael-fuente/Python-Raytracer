@@ -62,7 +62,7 @@ https://www.youtube.com/watch?v=vt9vAcZQT4A
 
 
 A basic version of this raytracer can be found here:
-https://github.com/jamesbowman/raytrace
+https://www.excamera.com/sphinx/article-ray.html
 
 
 A C++ version of this raytracer can be found here:
