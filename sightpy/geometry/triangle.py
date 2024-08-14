@@ -8,7 +8,7 @@ from ..geometry.collider import Collider
 class Triangle(Primitive): 
     def __init__(self,center,  material, p1 , p2, p3, max_ray_depth,shadow = True):
         super().__init__(center,  material, max_ray_depth, shadow = shadow)  
-        self.collider_list += [Triangle_Collider(assigned_primitive = self, p1 =p1, p2 = p2, p3 = p3)]
+        self.collider_list += [Triangle_Collider(assigned_surface = self, p1 =p1, p2 = p2, p3 = p3)]
 
     def get_uv(self, M, collider):
         return collider.get_uv(M)
