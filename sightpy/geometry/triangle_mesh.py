@@ -35,5 +35,5 @@ class TriangleMesh(Primitive):
             p1 = vs[i[0]] + center
             p2 = vs[i[1]] + center
             p3 = vs[i[2]] + center
-            self.collider_list += [colliders.Triangle_Collider(assigned_primitive = self, p1 =p1, p2 = p2, p3 = p3)]
+            self.collider_list += [Triangle_Collider(assigned_primitive = self, p1 =p1, p2 = p2, p3 = p3)]
 
